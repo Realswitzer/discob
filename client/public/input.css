@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .stacked {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    #messages::-webkit-scrollbar {
+        background-color: #24273a;
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+        background-color: transparent;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background-color: #c8ccf7;
+    }
+
+    img.emoji {
+        height: 1em;
+        width: 1em;
+        margin: 0 0.05em 0 0.1em;
+        vertical-align: -0.1em;
+    }
+}

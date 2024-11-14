@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "module": "ES2022",
+        "moduleResolution": "Bundler",
+        "paths": {
+            "@backend/*": ["../server/src/*"]
+        }
+    },
+    "exclude": ["node_modules", "build"],
+    "include": ["src/**/*.ts"]
+}
