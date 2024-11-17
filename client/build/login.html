@@ -8,8 +8,12 @@
     </head>
     <body>
         <div class="flex h-dvh w-dvw items-center bg-surface-0">
+            <div
+                id="notifications"
+                class="max-h-screen absolute right-0 top-0 overflow-y-scroll"
+            ></div>
             <div class="m-2 ml-auto mr-auto sm:flex sm:space-x-20">
-                <div class="w-64 space-y-2 p-2">
+                <form id="register-form" class="w-64 space-y-2 p-2">
                     <div class="flex items-center space-x-1">
                         <svg
                             class="h-6 stroke-text stroke-[1.7px]"
@@ -27,28 +31,28 @@
                         <span class="text-lg text-text">Register</span>
                     </div>
                     <input
-                        id="register-username"
+                        name="username"
                         type="text"
                         autocomplete="off"
                         class="w-full rounded-md bg-base p-1.5 text-[17px] text-text shadow-lg transition-colors placeholder:text-subtext-0 focus:bg-mantle focus:outline-none"
                         placeholder="username"
                     />
                     <input
-                        id="register-password"
+                        name="password"
                         type="password"
                         autocomplete="off"
                         class="w-full rounded-md bg-base p-1.5 text-[17px] text-text shadow-lg transition-colors placeholder:text-subtext-0 focus:bg-mantle focus:outline-none"
                         placeholder="password"
                     />
                     <input
-                        id="confirm-password"
+                        name="confirmPassword"
                         type="password"
                         autocomplete="off"
                         class="w-full rounded-md bg-base p-1.5 text-[17px] text-text shadow-lg transition-colors placeholder:text-subtext-0 focus:bg-mantle focus:outline-none"
                         placeholder="confirm password"
                     />
                     <input
-                        id="email"
+                        name="email"
                         type="text"
                         autocomplete="off"
                         class="w-full rounded-md bg-base p-1.5 text-[17px] text-text shadow-lg transition-colors placeholder:text-subtext-0 focus:bg-mantle focus:outline-none"
@@ -60,8 +64,8 @@
                     >
                         Register account
                     </button>
-                </div>
-                <div id="login" class="w-64 space-y-2 p-2">
+                </form>
+                <form id="login-form" class="w-64 space-y-2 p-2">
                     <div class="flex items-center space-x-1">
                         <svg
                             class="h-5 fill-text"
@@ -75,14 +79,14 @@
                         <span class="text-lg text-text">Login</span>
                     </div>
                     <input
-                        id="login-username"
+                        name="username"
                         type="text"
                         autocomplete="off"
                         class="w-full rounded-md bg-base p-1.5 text-[17px] text-text shadow-lg transition-colors placeholder:text-subtext-0 focus:bg-mantle focus:outline-none"
                         placeholder="username"
                     />
                     <input
-                        id="login-password"
+                        name="password"
                         type="password"
                         autocomplete="off"
                         class="w-full rounded-md bg-base p-1.5 text-[17px] text-text shadow-lg transition-colors placeholder:text-subtext-0 focus:bg-mantle focus:outline-none"
@@ -94,7 +98,7 @@
                     >
                         Login
                     </button>
-                </div>
+                </form>
             </div>
         </div>
         <script

@@ -32,6 +32,22 @@ export interface Reply {
     text: string | null;
 }
 
+export const UsernameRegex = /[^a-zA-Z0-9]+/g;
+export const EmailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
+
 export enum Events {
     Message = "message",
+}
+
+export enum StatusMessage {
+    UsernameTaken = "Username already taken",
+    InvalidEmail = "Invalid email",
+    InvalidUsername = "Invalid username",
+    EmailTaken = "Email already used",
+    EnterInformation = "Please enter all information",
+    PasswordMismatch = "Passwords do not match",
+    EnterCode = "Please enter a code",
+    IncorrectCode = "Incorrect code",
+    Default = "An error has occured",
+    AccountVerified = "Account successfully verified",
 }

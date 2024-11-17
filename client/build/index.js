@@ -38,6 +38,10 @@
   var $closeReply = $("#close-reply");
   var $messageInput = $("#message-input");
 
+  // ../server/src/types.ts
+  var UsernameRegex = /[^a-zA-Z0-9]+/g;
+  var EmailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
+
   // src/events/socket/socketUtil.ts
   var import_socket = __toESM(require_socket());
   var socket = (0, import_socket.io)();
@@ -191,6 +195,22 @@
       new Message().setMessage(message.MessageText).setSender(message.Username, message.UserColor).setTimestamp(date).append();
     });
   }
+  function checkAccountData(data) {
+    const { username, password, confirmPassword, email } = data;
+    if (!(username && password && confirmPassword && email)) {
+      return [false, "Please enter all information" /* EnterInformation */];
+    }
+    if (UsernameRegex.test(username)) {
+      return [false, "Invalid username" /* InvalidUsername */];
+    }
+    if (!EmailRegex.test(email)) {
+      return [false, "Invalid email" /* InvalidEmail */];
+    }
+    if (confirmPassword != password) {
+      return [false, "Passwords do not match" /* PasswordMismatch */];
+    }
+    return [true, ""];
+  }
 
   // src/events/listeners/handlers/hoverInput.ts
   function messageMouseoverHandler() {
@@ -222,7 +242,6 @@
 
   // src/events/listeners/handlers/loadMessages.ts
   async function loadHandler() {
-    if (!$messages.length) return;
     await appendMessages("public", 50, 0);
   }
 
@@ -235,13 +254,145 @@
     }, 50);
   }
 
+  // src/templates/notification.ts
+  var NotificationTemplate = (notification) => {
+    const colors = notification.type === "Notice" /* Notice */ ? {
+      border: "border-light-blue",
+      bg: "bg-blue",
+      hover: "hover:bg-dark-blue"
+    } : {
+      border: "border-maroon",
+      bg: "bg-red",
+      hover: "hover:bg-dark-red"
+    };
+    return `<div
+        class="notification m-2 h-auto w-64 rounded-md border-2 ${colors.border} ${colors.bg} cursor-pointer ${colors.hover} transition-all"
+    >
+        <div class="m-2 flex flex-col">
+            <div class="flex space-x-1 align-middle">
+                <svg
+                    class="w-4"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        class="fill-white"
+                        fill-rule="evenodd"
+                        d="M10 3a7 7 0 100 14 7 7 0 000-14zm-9 7a9 9 0 1118 0 9 9 0 01-18 0zm8-4a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm.01 8a1 1 0 102 0V9a1 1 0 10-2 0v5z"
+                    />
+                </svg>
+                <span class="font-monospace text-[14px] text-white"
+                    >${notification.type}</span
+                >
+            </div>
+            <span class="font-monospace text-[14px] text-white"
+                >${notification.message}</span
+            >
+        </div>
+    </div>`;
+  };
+
+  // src/lib/classes/notification.ts
+  var NotificationMessage = class {
+    message;
+    type;
+    constructor() {
+      this.message = "An error has occured";
+      this.type = null;
+    }
+    setMessage(message) {
+      this.message = message;
+      return this;
+    }
+    setType(type) {
+      this.type = type;
+      return this;
+    }
+    append() {
+      const notification = $(NotificationTemplate(this)).css({ opacity: 0 }).appendTo("#notifications").animate({ opacity: 1 }, 300, "linear").on("click", function() {
+        $(this).animate({ opacity: 0 }, 300, "linear", function() {
+          $(this).remove();
+        });
+      });
+      setTimeout(() => {
+        notification.animate({ opacity: 0 }, 300, "linear", function() {
+          $(this).remove();
+        });
+      }, 5e3);
+      return this;
+    }
+  };
+
+  // src/events/listeners/handlers/register.ts
+  function registerHandler(event) {
+    event.preventDefault();
+    const data = {};
+    $(this).serializeArray().map((input) => {
+      data[input.name] = input.value;
+    });
+    const [success, message] = checkAccountData(data);
+    if (!success) {
+      new NotificationMessage().setMessage(message).setType("Error" /* Error */).append();
+    } else {
+      $.ajax({
+        url: "/register",
+        method: "POST",
+        processData: false,
+        data: JSON.stringify(data),
+        contentType: "application/json"
+      }).then((response) => {
+        if (response.error) {
+          new NotificationMessage().setMessage(response.error).setType("Error" /* Error */).append();
+        } else if (response.email) {
+          localStorage.setItem("email", response.email);
+          window.location.href = window.location.origin + "/verification";
+        }
+      });
+    }
+  }
+
+  // src/events/listeners/handlers/verification.ts
+  function verificationHandler(event) {
+    event.preventDefault();
+    const code = $("input[name=code]").val();
+    if (code.trim() === "") {
+      new NotificationMessage().setMessage("Please enter a code" /* EnterCode */).setType("Error" /* Error */).append();
+      return;
+    }
+    const email = localStorage.getItem("email");
+    if (!email) {
+      new NotificationMessage().setType("Error" /* Error */).append();
+      return;
+    }
+    $.ajax({
+      url: "/verify",
+      method: "POST",
+      data: JSON.stringify({
+        email,
+        code
+      }),
+      processData: false,
+      contentType: "application/json"
+    }).then((response) => {
+      if (response.error) {
+        new NotificationMessage().setMessage(response.error).setType("Error" /* Error */).append();
+      } else if (response.success) {
+        new NotificationMessage().setMessage(response.success).setType("Notice" /* Notice */).append();
+      }
+    });
+  }
+
   // src/events/listeners/domListeners.ts
-  $(window).on("load", async () => {
-    await loadHandler();
-  }).on("resize", windowResizeHandler);
+  if ($messages.length) {
+    $(window).on("load", async () => {
+      await loadHandler();
+    }).on("resize", windowResizeHandler);
+  }
   $(document).on("keydown", keydownHandler);
   $messageInput.on("keydown", messageKeydownHandler).on("mouseover", messageMouseoverHandler).on("input", refreshNewline);
   $("#send-button").on("click", sendMessage);
+  $("#register-form").on("submit", registerHandler);
+  $("#verification-form").on("submit", verificationHandler);
 
   // src/events/socket/message.ts
   socket.on("message" /* Message */, (data) => {

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Verify account</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="flex h-dvh w-dvw items-center bg-surface-0">
+            <div
+                id="notifications"
+                class="max-h-screen absolute right-0 top-0 overflow-y-scroll"
+            ></div>
+            <div class="m-auto">
+                <form id="verification-form" class="flex flex-col space-y-2">
+                    <span class="text-lg text-text"
+                        >a verification email has been sent</span
+                    >
+                    <input
+                        name="code"
+                        class="w-full rounded-md bg-base p-1.5 text-[17px] text-text shadow-lg transition-colors placeholder:text-subtext-0 focus:bg-mantle focus:outline-none"
+                        type="text"
+                        placeholder="enter code here"
+                        maxlength="6"
+                    />
+                    <button
+                        class="w-full rounded-md bg-base p-1.5 text-text shadow-lg transition-all hover:bg-text hover:text-base"
+                    >
+                        Submit
+                    </button>
+                    <!-- <button
+                        class="w-full rounded-md bg-base p-1.5 text-text shadow-lg transition-all hover:bg-text hover:text-base"
+                    >
+                        Resend code
+                    </button> -->
+                </form>
+            </div>
+        </div>
+        <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.socket.io/4.8.0/socket.io.min.js"
+            integrity="sha384-OoIbkvzsFFQAG88r+IqMAjyOtYDPGO0cqK5HF5Uosdy/zUEGySeAzytENMDynREd"
+            crossorigin="anonymous"
+        ></script>
+        <!-- <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script> -->
+        <script src="./index.js"></script>
+    </body>
+</html>

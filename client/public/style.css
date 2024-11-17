@@ -585,8 +585,24 @@ img.emoji {
   visibility: hidden;
 }
 
+.absolute {
+  position: absolute;
+}
+
+.right-0 {
+  right: 0px;
+}
+
+.top-0 {
+  top: 0px;
+}
+
 .m-2 {
   margin: 0.5rem;
+}
+
+.m-auto {
+  margin: auto;
 }
 
 .mb-0 {
@@ -685,6 +701,10 @@ img.emoji {
   height: 16px;
 }
 
+.h-auto {
+  height: auto;
+}
+
 .h-dvh {
   height: 100dvh;
 }
@@ -700,6 +720,10 @@ img.emoji {
 
 .max-h-72 {
   max-height: 18rem;
+}
+
+.max-h-screen {
+  max-height: 100vh;
 }
 
 .min-h-12 {
@@ -762,6 +786,10 @@ img.emoji {
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .resize-none {
@@ -835,6 +863,14 @@ img.emoji {
   border-top-right-radius: 0.5rem;
 }
 
+.border {
+  border-width: 1px;
+}
+
+.border-2 {
+  border-width: 2px;
+}
+
 .border-t-2 {
   border-top-width: 2px;
 }
@@ -842,6 +878,16 @@ img.emoji {
 .border-surface-2 {
   --tw-border-opacity: 1;
   border-color: rgb(91 96 120 / var(--tw-border-opacity, 1));
+}
+
+.border-light-blue {
+  --tw-border-opacity: 1;
+  border-color: rgb(94 142 201 / var(--tw-border-opacity, 1));
+}
+
+.border-maroon {
+  --tw-border-opacity: 1;
+  border-color: rgb(198 0 17 / var(--tw-border-opacity, 1));
 }
 
 .bg-base {
@@ -864,6 +910,16 @@ img.emoji {
   background-color: rgb(91 96 120 / var(--tw-bg-opacity, 1));
 }
 
+.bg-blue {
+  --tw-bg-opacity: 1;
+  background-color: rgb(36 91 158 / var(--tw-bg-opacity, 1));
+}
+
+.bg-red {
+  --tw-bg-opacity: 1;
+  background-color: rgb(135 0 29 / var(--tw-bg-opacity, 1));
+}
+
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
@@ -884,6 +940,10 @@ img.emoji {
 
 .fill-text {
   fill: #cad3f5;
+}
+
+.fill-white {
+  fill: #ffffff;
 }
 
 .stroke-text {
@@ -927,6 +987,14 @@ img.emoji {
   padding-left: 1rem;
 }
 
+.align-middle {
+  vertical-align: middle;
+}
+
+.font-monospace {
+  font-family: monospace;
+}
+
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -934,6 +1002,10 @@ img.emoji {
 
 .text-\[12px\] {
   font-size: 12px;
+}
+
+.text-\[14px\] {
+  font-size: 14px;
 }
 
 .text-\[15px\] {
@@ -965,6 +1037,11 @@ img.emoji {
 .text-text {
   --tw-text-opacity: 1;
   color: rgb(202 211 245 / var(--tw-text-opacity, 1));
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
 .shadow-lg {
@@ -1024,6 +1101,16 @@ img.emoji {
 .hover\:bg-text:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(202 211 245 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:bg-dark-blue:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(36 75 122 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:bg-dark-red:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(81 0 17 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:text-base:hover {

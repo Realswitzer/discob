@@ -1,7 +1,14 @@
-import { DatabaseMessage, User } from "@backend/types";
+import {
+    DatabaseMessage,
+    User,
+    StatusMessage,
+    UsernameRegex,
+    EmailRegex,
+} from "@backend/types";
 import { $messages } from "./globals";
 import { Message } from "./lib/classes/message";
 import { $messageInput, $replyLabel } from "./globals";
+import { RegisterData } from "./types";
 
 //TEMP
 export const tempData: User = {
@@ -121,4 +128,21 @@ export async function appendMessages(
             .setTimestamp(date)
             .append();
     });
+}
+
+export function checkAccountData(data: RegisterData): [boolean, string] {
+    const { username, password, confirmPassword, email } = data;
+    if (!(username && password && confirmPassword && email)) {
+        return [false, StatusMessage.EnterInformation];
+    }
+    if (UsernameRegex.test(username)) {
+        return [false, StatusMessage.InvalidUsername];
+    }
+    if (!EmailRegex.test(email)) {
+        return [false, StatusMessage.InvalidEmail];
+    }
+    if (confirmPassword != password) {
+        return [false, StatusMessage.PasswordMismatch];
+    }
+    return [true, ""];
 }

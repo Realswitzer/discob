@@ -1,4 +1,4 @@
-import { $messageInput } from "../../globals";
+import { $messageInput, $messages } from "../../globals";
 import { refreshNewline, sendMessage } from "../../utils";
 import {
     keydownHandler,
@@ -6,13 +6,17 @@ import {
     messageMouseoverHandler,
     loadHandler,
     windowResizeHandler,
+    registerHandler,
+    verificationHandler,
 } from "./handlers";
 
-$(window)
-    .on("load", async () => {
-        await loadHandler();
-    })
-    .on("resize", windowResizeHandler);
+if ($messages.length) {
+    $(window)
+        .on("load", async () => {
+            await loadHandler();
+        })
+        .on("resize", windowResizeHandler);
+}
 
 $(document).on("keydown", keydownHandler);
 
@@ -22,3 +26,7 @@ $messageInput
     .on("input", refreshNewline);
 
 $("#send-button").on("click", sendMessage);
+
+$("#register-form").on("submit", registerHandler);
+
+$("#verification-form").on("submit", verificationHandler);
