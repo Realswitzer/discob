@@ -4,6 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "build": "node build.mjs",
+        "postbuild": "cp -r ./public/html/. ./build && cp ./public/style.css ./build/style.css",
         "build:win": "node build.mjs",
         "postbuild:win": "xcopy .\\public\\html .\\build /s /Y & copy .\\public\\style.css .\\build\\style.css",
         "tailwind": "npx tailwindcss -i public/input.css -o public/style.css --watch"
@@ -12,7 +14,11 @@
     "license": "ISC",
     "devDependencies": {
         "@types/jquery": "^3.5.32",
+        "@types/node": "^22.9.0",
         "esbuild": "^0.24.0",
         "esbuild-plugin-external-global": "^1.0.1"
+    },
+    "dependencies": {
+        "socket.io-client": "^4.8.1"
     }
 }

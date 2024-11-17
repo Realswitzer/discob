@@ -4,7 +4,11 @@
         "moduleResolution": "Bundler",
         "paths": {
             "@backend/*": ["../server/src/*"]
-        }
+        },
+        "lib": [
+            "ES2015",
+            "DOM"
+        ]
     },
     "exclude": ["node_modules", "build"],
     "include": ["src/**/*.ts"]

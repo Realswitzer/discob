@@ -31,3 +31,7 @@ export interface Reply {
     username: string | null;
     text: string | null;
 }
+
+export enum Events {
+    Message = "message",
+}

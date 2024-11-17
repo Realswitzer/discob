@@ -166,9 +166,10 @@
                             class="resize-none placeholder:text-overlay-0 overflow-y-scroll m-2 focus:outline-none h-12 min-h-12 max-h-72 focus:ring-2 focus:ring-opacity-80 focus:ring-text rounded-lg shadow-lg bg-base p-[10px] text-[18px] text-text"
                             placeholder="enter message"
                             id="message-input"
+                            maxlength="1000"
                         ></textarea>
                     </div>
-                    <button class="max-h-12 mt-auto mb-2">
+                    <button id="send-button" class="max-h-12 mt-auto mb-2">
                         <svg
                             class="sm:hidden h-10 mb-1 mr-1 fill-lavender"
                             viewBox="0 0 28 28"
@@ -193,11 +194,11 @@
             crossorigin="anonymous"
         ></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
         <script>
             eruda.init();
         </script>
-        <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script>
+        <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js"></script> -->
         <!-- <script src="./socket.io/socket.io.js"></script> -->
         <script src="./index.js"></script>
     </body>
