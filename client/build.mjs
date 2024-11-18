@@ -7,7 +7,7 @@ await esbuild
         logLevel: "info",
         entryPoints: ["./src/index.ts"],
         bundle: true,
-        minify: false,
+        minify: true,
         platform: "browser",
         packages: "external",
         outfile: "./build/index.js",

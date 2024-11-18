@@ -9,3 +9,8 @@ export type RegisterData = {
     confirmPassword: string | undefined;
     email: string | undefined;
 };
+
+export type LoginData = {
+    username: string | undefined;
+    password: string | undefined;
+};

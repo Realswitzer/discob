@@ -1,9 +1,8 @@
-import { socket } from "../../events/socket/socketUtil"
+import { socket } from "../../events/socket/socketUtil";
 import { MessageTemplate } from "../../templates/messages";
 import { closeReply, scrollToBottom } from "../../utils";
 import { sanitize } from "../../utils";
 import { Reply, Events } from "@backend/types";
-import { $messages } from "../../globals";
 // import { emojis } from "../assets/emoji";
 // import twemoji from "twemoji";
 
@@ -16,6 +15,7 @@ export class Message {
     timestamp: Date;
     reply: null | Reply;
     chained: boolean;
+    token: string | null;
 
     constructor() {
         this.text = null;
@@ -26,6 +26,7 @@ export class Message {
         this.timestamp = new Date();
         this.reply = null;
         this.chained = false;
+        this.token = null;
     }
 
     prepend(): Message {
@@ -36,7 +37,7 @@ export class Message {
 
         $(MessageTemplate(this))
             .data("message-info", this)
-            .prependTo("#messages");
+            .insertBefore($(".message").first());
 
         return this;
     }
@@ -98,6 +99,12 @@ export class Message {
             color: color,
             text: text,
         };
+
+        return this;
+    }
+
+    setToken(token: string) {
+        this.token = token;
 
         return this;
     }

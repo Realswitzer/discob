@@ -45,7 +45,7 @@ var argon2 = __toESM(require("argon2"));
 var nodemailer = __toESM(require("nodemailer"));
 
 // src/types.ts
-var UsernameRegex = /[^a-zA-Z0-9]+/g;
+var UsernameRegex = /[^a-zA-Z0-9_-]+/g;
 var EmailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
 
 // src/utils.ts
@@ -80,13 +80,15 @@ async function getMessages(room, count, offset) {
 }
 async function createAccount(username, password, email) {
   const passwordHash = await argon2.hash(password);
-  const verificationCode = generateCode(6);
+  const verificationCode = generateToken(6);
+  const verificationCodeHash = await argon2.hash(verificationCode);
+  const token = generateToken(100);
   let conn;
   try {
     conn = await pool.getConnection();
     const data = await conn.query(
-      "INSERT INTO discob.accounts (Username, PasswordHash, Email, IsVerified, ExpirationDate, VerificationCode) VALUES (?, ?, ?, ?, ADDTIME(NOW(), 500), ?);",
-      [username, passwordHash, email, false, verificationCode]
+      "INSERT INTO discob.accounts (Username, PasswordHash, Email, IsVerified, ExpirationDate, VerificationCode, AccountToken) VALUES (?, ?, ?, ?, ADDTIME(NOW(), 500), ?, ?);",
+      [username, passwordHash, email, false, verificationCodeHash, token]
     );
     await sendVerificationEmail(email, verificationCode);
     return data;
@@ -129,7 +131,7 @@ async function checkUsername(username) {
   } finally {
     conn.release();
   }
-  if (res.length) {
+  if (res.length && username.length <= 20) {
     return true;
   } else {
     return false;
@@ -149,7 +151,7 @@ async function checkEmail(email) {
   } finally {
     conn.release();
   }
-  if (res.length) {
+  if (res.length && email.length <= 255) {
     return true;
   } else {
     return false;
@@ -176,29 +178,28 @@ async function sendVerificationEmail(email, code) {
     text: `Your verification code is: ${code}`
   });
 }
-function generateCode(length) {
-  let result = "";
+function generateToken(length) {
+  let token = "";
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
   let counter = 0;
   while (counter < length) {
-    result += characters.charAt(
+    token += characters.charAt(
       Math.floor(Math.random() * charactersLength)
     );
     counter += 1;
   }
-  return result;
+  return token;
 }
 async function getVerificationCode(email) {
   let conn;
-  let res = [{ VerificationCode: "" }];
+  let res;
   try {
     conn = await pool.getConnection();
     res = await conn.query(
       "SELECT VerificationCode FROM discob.accounts WHERE Email=?",
       [email]
     );
-    console.log(res);
   } catch (err) {
     console.log(err);
   } finally {
@@ -207,19 +208,46 @@ async function getVerificationCode(email) {
   return res[0].VerificationCode;
 }
 async function checkVerification(email, code) {
+  const isAlreadyVerified = await checkIfVerified(email);
   const correctCode = await getVerificationCode(email);
-  if (code === correctCode) {
-    return [true, "Account successfully verified" /* AccountVerified */];
-  } else {
-    return [false, "Incorrect code" /* IncorrectCode */];
+  if (isAlreadyVerified) {
+    return [false, "Account already verified" /* AccountAlreadyVerified */];
   }
+  if (await argon2.verify(correctCode, code)) {
+    return [true, "Account successfully verified" /* AccountVerified */];
+  }
+  return [false, "Incorrect code" /* IncorrectCode */];
+}
+async function getAccountData(username) {
+  let conn;
+  let res;
+  try {
+    conn = await pool.getConnection();
+    res = await conn.query(
+      "SELECT AccountToken, Username FROM discob.accounts WHERE Username=?;",
+      [username]
+    );
+  } catch (err) {
+    console.log(err);
+  } finally {
+    conn.release();
+  }
+  return {
+    token: res[0]?.AccountToken,
+    username: res[0]?.Username
+  };
 }
 async function verifyAccount(email) {
   let conn;
+  let res;
   try {
     conn = await pool.getConnection();
     await conn.query(
       "UPDATE LOW_PRIORITY discob.accounts SET IsVerified=1 WHERE Email=?;",
+      [email]
+    );
+    res = await conn.query(
+      "SELECT AccountToken, Username FROM discob.accounts WHERE Email=?;",
       [email]
     );
   } catch (err) {
@@ -227,15 +255,107 @@ async function verifyAccount(email) {
   } finally {
     conn.release();
   }
+  return {
+    token: res[0]?.AccountToken,
+    username: res[0]?.Username
+  };
+}
+async function checkIfVerified(email) {
+  let conn;
+  let res;
+  try {
+    conn = await pool.getConnection();
+    res = await conn.query(
+      "SELECT IsVerified FROM discob.accounts WHERE Email=? && IsVerified=0;",
+      [email]
+    );
+  } catch (err) {
+    console.log(err);
+  } finally {
+    conn.release();
+  }
+  return !res.length;
+}
+async function getAccountPassword(username) {
+  let conn;
+  let res;
+  try {
+    conn = await pool.getConnection();
+    res = await conn.query(
+      "SELECT PasswordHash FROM discob.accounts WHERE Username=?",
+      [username]
+    );
+  } catch (err) {
+    console.log(err);
+  } finally {
+    conn.release();
+  }
+  return res[0]?.PasswordHash;
+}
+async function authenticateUser(username, password) {
+  const passwordHash = await getAccountPassword(username);
+  if (!passwordHash) {
+    return [false, "Account not found" /* AccountNotFound */];
+  }
+  if (!await argon2.verify(passwordHash, password)) {
+    return [false, "Incorrect password" /* IncorrectPassword */];
+  }
+  return [true, ""];
+}
+async function insertMessageData(data) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    await conn.query(
+      "INSERT INTO discob.messages (ID, RoomID, MessageText, MessageDate, Username, UserColor, Reply) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [
+        0,
+        "public",
+        data.text,
+        Number(data.timestamp).toString(),
+        data.sender.username,
+        data.sender.color,
+        JSON.stringify(data.reply)
+      ]
+    );
+  } catch (err) {
+    console.log(err);
+  } finally {
+    conn.release();
+  }
+}
+async function isTokenValid(username, token) {
+  let conn;
+  let res;
+  try {
+    conn = await pool.getConnection();
+    res = await conn.query(
+      "SELECT AccountToken FROM discob.accounts WHERE Username=?;",
+      [username]
+    );
+  } catch (err) {
+    console.log(err);
+  } finally {
+    conn.release();
+  }
+  return res[0]?.AccountToken === token;
+}
+function sanitize(input) {
+  return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 // src/events/initializeSocket.ts
 var initializeSocketEvents = (io2) => {
   io2.on("connection", (socket) => {
-    socket.on("message" /* Message */, (data) => {
-      data.text = data.text.substring(0, 1e3);
+    socket.on("message" /* Message */, async (data) => {
+      data.text = sanitize(data.text.substring(0, 1e3));
       data.timestamp = /* @__PURE__ */ new Date();
-      socket.broadcast.emit("message" /* Message */, data);
+      if (await isTokenValid(data.sender.username, data.token)) {
+        socket.broadcast.emit("message" /* Message */, data);
+        await insertMessageData(data);
+      } else {
+        socket.emit("error" /* Error */, "Message failed to send" /* MessageFailed */);
+      }
     });
   });
 };
@@ -243,14 +363,14 @@ var initializeSocketEvents = (io2) => {
 // src/index.ts
 var import_cron = require("cron");
 var limiter = (0, import_express_rate_limit.rateLimit)({
-  windowMs: 1e3 * 60 * 10,
-  limit: 15,
+  windowMs: 1e3 * 60,
+  limit: 10,
   validate: {
     trustProxy: true
   },
   handler: function(req, res) {
     res.send({
-      error: "Exceeded rate limit"
+      error: "Exceeded rate limit" /* ExceededRateLimit */
     });
   }
 });
@@ -285,8 +405,8 @@ app.post(
   limiter,
   (req, res) => {
     const { username, password, email } = req.body;
-    checkAccountData(username, email).then((response) => {
-      const [isValid, message] = response;
+    checkAccountData(username, email).then((response2) => {
+      const [isValid, message] = response2;
       if (isValid) {
         createAccount(username, password, email).then(() => {
           res.send({
@@ -321,9 +441,34 @@ app.post(
     }
     const [success, message] = await checkVerification(email, code);
     if (success) {
-      verifyAccount(email).then(() => {
+      verifyAccount(email).then((userData) => {
         res.send({
-          success: message
+          success: message,
+          userData
+        });
+      });
+    } else {
+      res.send({
+        error: message
+      });
+    }
+  }
+);
+app.post(
+  "/login",
+  limiter,
+  async (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      res.send({
+        error: "An error has occured" /* Default */
+      });
+    }
+    const [success, message] = await authenticateUser(username, password);
+    if (success) {
+      getAccountData(username).then((userData) => {
+        res.send({
+          userData
         });
       });
     } else {

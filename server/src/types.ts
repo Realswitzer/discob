@@ -15,6 +15,11 @@ export interface User {
     username: string;
 }
 
+export interface UserData {
+    username: string;
+    token: string;
+}
+
 export interface MessageData {
     text: string;
     sender: {
@@ -24,6 +29,7 @@ export interface MessageData {
     timestamp: Date;
     reply: Reply | null;
     chained: boolean;
+    token: string;
 }
 
 export interface Reply {
@@ -32,11 +38,13 @@ export interface Reply {
     text: string | null;
 }
 
-export const UsernameRegex = /[^a-zA-Z0-9]+/g;
+export const UsernameRegex = /[^a-zA-Z0-9_-]+/g;
 export const EmailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
 
 export enum Events {
     Message = "message",
+    Error = "error",
+    Disconnect = "disconnect"
 }
 
 export enum StatusMessage {
@@ -50,4 +58,10 @@ export enum StatusMessage {
     IncorrectCode = "Incorrect code",
     Default = "An error has occured",
     AccountVerified = "Account successfully verified",
+    ExceededRateLimit = "Exceeded rate limit",
+    AccountAlreadyVerified = "Account already verified",
+    AccountNotFound = "Account not found",
+    IncorrectPassword = "Incorrect password",
+    MessageFailed = "Message failed to send",
+    SocketDisconnected = "Socket has disconnected"
 }

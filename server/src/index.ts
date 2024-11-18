@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, response, Response } from "express";
 import { rateLimit } from "express-rate-limit";
 import path from "path";
 import http from "http";
@@ -9,23 +9,24 @@ import {
     deleteExpiredAccounts,
     getMessages,
     createAccount,
-    getVerificationCode,
     checkVerification,
     verifyAccount,
+    authenticateUser,
+    getAccountData,
 } from "./utils";
 import { initializeSocketEvents } from "./events/initializeSocket";
 import { CronJob } from "cron";
-import { StatusMessage } from "./types";
+import { StatusMessage, UserData } from "./types";
 
 const limiter = rateLimit({
-    windowMs: 1000 * 60 * 10,
-    limit: 15,
+    windowMs: 1000 * 60,
+    limit: 10,
     validate: {
         trustProxy: true,
     },
     handler: function (req, res) {
         res.send({
-            error: "Exceeded rate limit",
+            error: StatusMessage.ExceededRateLimit,
         });
     },
 });
@@ -74,6 +75,7 @@ app.post(
         >,
         res: Response
     ) => {
+        //TODO make handler functions instead of putting everything in index.ts
         const { username, password, email } = req.body;
         checkAccountData(username, email)
             .then((response) => {
@@ -119,15 +121,44 @@ app.post(
         }
         const [success, message] = await checkVerification(email, code);
         if (success) {
-            verifyAccount(email).then(() => {
+            verifyAccount(email).then((userData: UserData) => {
                 res.send({
                     success: message,
+                    userData: userData,
                 });
             });
         } else {
             res.send({
                 error: message,
             });
+        }
+    }
+);
+
+app.post(
+    "/login",
+    limiter,
+    async (
+        req: Request<{}, {}, { username: string; password: string }>,
+        res: Response
+    ) => {
+        const { username, password } = req.body;
+        if (!username || !password) {
+            res.send({
+                error: StatusMessage.Default,
+            });
+        }
+        const [success, message] = await authenticateUser(username, password)
+        if (success) {
+            getAccountData(username).then((userData: UserData) => {
+                res.send({
+                    userData: userData
+                })
+            })
+        } else {
+            res.send({
+                error: message
+            })
         }
     }
 );
