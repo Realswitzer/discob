@@ -1,6 +1,6 @@
 import { socket } from "../events/socket/socketUtil";
 import { MessageTemplate } from "../templates/messages";
-import { closeReply, scrollToBottom } from "../utils";
+import { applyMarkdown, closeReply, scrollToBottom } from "../utils";
 import { sanitize } from "../utils";
 import { Reply, Events } from "@backend/types";
 // import { emojis } from "../assets/emoji";
@@ -8,6 +8,7 @@ import { Reply, Events } from "@backend/types";
 
 export class Message {
     text: string | null;
+    parsed: string | null;
     sender: {
         username: string | null;
         color: string | null;
@@ -19,6 +20,7 @@ export class Message {
 
     constructor() {
         this.text = null;
+        this.parsed = null;
         this.sender = {
             username: null,
             color: null,
@@ -68,6 +70,7 @@ export class Message {
         //     });
         // }
         this.text = sanitize(text);
+        this.parsed = applyMarkdown(text);
 
         return this;
     }

@@ -4,23 +4,22 @@
 
 @layer components {
     .stacked {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
+        @apply rounded-t-none;
     }
 
     #messages::-webkit-scrollbar {
-        background-color: #24273a;
+        @apply bg-base;
     }
 
     ::-webkit-scrollbar {
-        width: 8px;
-        background-color: transparent;
-        border-radius: 4px;
+        @apply w-2;
+        @apply bg-base;
+        @apply rounded;
     }
 
     ::-webkit-scrollbar-thumb {
-        border-radius: 4px;
-        background-color: #c8ccf7;
+        @apply rounded;
+        @apply bg-text;
     }
 
     img.emoji {
@@ -28,5 +27,19 @@
         width: 1em;
         margin: 0 0.05em 0 0.1em;
         vertical-align: -0.1em;
+    }
+}
+
+@layer base {
+    a {
+        @apply bg-link;
+        @apply hover:underline;
+    }
+
+    code {
+        @apply text-text;
+        @apply rounded-md;
+        @apply bg-outline;
+        @apply p-[3px];
     }
 }

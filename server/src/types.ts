@@ -22,6 +22,7 @@ export interface UserData {
 
 export interface MessageData {
     text: string;
+    parsed: string;
     sender: {
         username: string;
         color: string;

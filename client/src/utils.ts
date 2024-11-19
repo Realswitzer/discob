@@ -166,3 +166,19 @@ export function checkLoginData(data: LoginData): [boolean, string] {
     }
     return [true, ""];
 }
+
+export function applyMarkdown(text: string) {
+    const sections = text.split(/(`[^\`]+`)/g);
+    sections.forEach((section: string, index: number) => {
+        if (section.endsWith("`") && section.startsWith("`")) {
+            sections[index] = `<code>${section.slice(1, -1)}</code>`;
+        }
+    });
+    return sections
+        .join("")
+        .replace(/\*{3}([^\*]+)\*{3}/g, "<b><i>$1</i></b>")
+        .replace(/\*{2}([^\*]+)\*{2}/g, "<b>$1</b>")
+        .replace(/\*{1}([^\*]+)\*{1}/g, "<i>$1</i>")
+        .replace(/~{2}([^~]+)~{2}/g, "<strike>$1</strike>")
+        .replace(/(https?:\/\/[^\s]+)/g, "<a href='$1' target='_blank'>$1</a>");
+}

@@ -1,6 +1,6 @@
-import { socket } from "./socketUtil.ts";
-import { NotificationMessage } from "../../lib/classes/notification.js";
-import { Status } from "../../types.js";
+import { socket } from "./socketUtil";
+import { NotificationMessage } from "../../lib/notification";
+import { Status } from "../../types";
 
 socket.on("reconnect", () => {
   new NotificationMessage()

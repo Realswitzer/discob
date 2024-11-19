@@ -1,9 +1,9 @@
-import { MessageData } from "@backend/types";
 import { parseTimestamp } from "../utils";
+import { Message } from "../lib/message";
 
-export const MessageTemplate = (data: MessageData): string => {
+export const MessageTemplate = (data: Message): string => {
     const messageBuilder: string = `
-      <span class="break-words text-[18px] text-text whitespace-pre-line">${data.text}</span>`;
+      <span class="break-words text-[18px] text-text whitespace-pre-line">${data.parsed}</span>`;
     const usernameBuilder: string =
         !data.chained || data.reply
             ? `

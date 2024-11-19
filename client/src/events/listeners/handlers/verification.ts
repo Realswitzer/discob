@@ -47,7 +47,6 @@ export function verificationHandler(event: JQuery.SubmitEvent) {
                     .setType(Status.Notice)
                     .append();
                 const { token, username } = response.userData;
-                console.log(token, username);
                 localStorage.removeItem("email");
                 localStorage.setItem("token", token);
                 localStorage.setItem("username", username);

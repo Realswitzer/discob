@@ -1,7 +1,7 @@
 import { Events, StatusMessage } from "@backend/types"
 import { socket } from "./socketUtil"
 import { Status } from "../../types";
-import { NotificationMessage } from "../../lib/classes/notification";
+import { NotificationMessage } from "../../lib/notification";
 
 socket.on(Events.Disconnect, () => {
     new NotificationMessage()
