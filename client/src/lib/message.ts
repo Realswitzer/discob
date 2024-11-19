@@ -1,7 +1,7 @@
-import { socket } from "../../events/socket/socketUtil";
-import { MessageTemplate } from "../../templates/messages";
-import { closeReply, scrollToBottom } from "../../utils";
-import { sanitize } from "../../utils";
+import { socket } from "../events/socket/socketUtil";
+import { MessageTemplate } from "../templates/messages";
+import { closeReply, scrollToBottom } from "../utils";
+import { sanitize } from "../utils";
 import { Reply, Events } from "@backend/types";
 // import { emojis } from "../assets/emoji";
 // import twemoji from "twemoji";

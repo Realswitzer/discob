@@ -9,7 +9,7 @@ import {
     registerHandler,
     verificationHandler,
     loginHandler,
-    scrollHandler
+    scrollHandler,
 } from "./handlers";
 
 switch (window.location.pathname) {
@@ -25,13 +25,13 @@ switch (window.location.pathname) {
 
         $("#send-button").on("click", sendMessage);
 
-        $messages.on("scroll", scrollHandler)
+        $messages.on("scroll", scrollHandler);
         break;
     case "/account":
         $("#register-form").on("submit", registerHandler);
         $("#login-form").on("submit", loginHandler);
         break;
-    case "/verification":
+    case "/verify":
         $("#verification-form").on("submit", verificationHandler);
         break;
     default:

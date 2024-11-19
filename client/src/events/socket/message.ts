@@ -1,5 +1,5 @@
 import { MessageData, Events } from "@backend/types";
-import { Message } from "../../lib/classes/message";
+import { Message } from "../../lib/message";
 import { socket } from "./socketUtil";
 
 socket.on(Events.Message, (data: MessageData) => {

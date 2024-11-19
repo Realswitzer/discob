@@ -1,6 +1,8 @@
 import { Server, Socket } from "socket.io";
 import { MessageData, Events, StatusMessage } from "../types";
-import { insertMessageData, isTokenValid, sanitize } from "../utils";
+import { sanitize } from "../utils/utility/sanitize";
+import { isTokenValid } from "../utils/db/checkTokenValidity";
+import { insertMessageData } from "../utils/db/insertMessageData";
 
 export const initializeSocketEvents = (io: Server) => {
     io.on("connection", (socket: Socket) => {
@@ -11,9 +13,9 @@ export const initializeSocketEvents = (io: Server) => {
 
             if (await isTokenValid(data.sender.username, data.token)) {
                 socket.broadcast.emit(Events.Message, data);
-                await insertMessageData(data)
+                await insertMessageData(data);
             } else {
-                socket.emit(Events.Error, StatusMessage.MessageFailed)
+                socket.emit(Events.Error, StatusMessage.MessageFailed);
             }
         });
     });

@@ -5,7 +5,7 @@ import {
     EmailRegex,
 } from "@backend/types";
 import { $messages } from "./globals";
-import { Message } from "./lib/classes/message";
+import { Message } from "./lib/message";
 import { $messageInput, $replyLabel } from "./globals";
 import { LoginData, RegisterData } from "./types";
 
@@ -125,21 +125,21 @@ export async function appendMessages(
 }
 
 export async function prependMessages(
-  room: string,
-  count: number,
-  offset: number
+    room: string,
+    count: number,
+    offset: number
 ) {
-  const messages = await fetchMessages(room, count, offset)
-  messages.forEach((message) => {
-    const date = new Date(Number(message.MessageDate))
-    new Message()
-      .setMessage(message.MessageText)
-      .setSender(message.Username, message.UserColor)
-      .setTimestamp(date)
-      .prepend()
-  })
+    const messages = await fetchMessages(room, count, offset);
+    messages.forEach((message) => {
+        const date = new Date(Number(message.MessageDate));
+        new Message()
+            .setMessage(message.MessageText)
+            .setSender(message.Username, message.UserColor)
+            .setTimestamp(date)
+            .prepend();
+    });
 
-  return messages
+    return messages;
 }
 
 export function checkAccountData(data: RegisterData): [boolean, string] {
@@ -160,9 +160,9 @@ export function checkAccountData(data: RegisterData): [boolean, string] {
 }
 
 export function checkLoginData(data: LoginData): [boolean, string] {
-    const { username, password } = data
+    const { username, password } = data;
     if (!username || !password) {
-        return [false, StatusMessage.EnterInformation]
+        return [false, StatusMessage.EnterInformation];
     }
-    return [true, ""]
+    return [true, ""];
 }

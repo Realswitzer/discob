@@ -1,5 +1,5 @@
-import { NotificationTemplate } from "../../templates/notification";
-import { Status } from "../../types";
+import { NotificationTemplate } from "../templates/notification";
+import { Status } from "../types";
 
 export class NotificationMessage {
     message: string;

@@ -1,7 +1,7 @@
-import { NotificationMessage } from "../../../lib/classes/notification";
+import { NotificationMessage } from "../../../lib/notification";
 import { Status } from "../../../types";
 import { checkLoginData } from "../../../utils";
-import { UserData } from "@backend/types"
+import { UserData } from "@backend/types";
 
 export function loginHandler(event: JQuery.SubmitEvent) {
     event.preventDefault();
@@ -25,18 +25,20 @@ export function loginHandler(event: JQuery.SubmitEvent) {
             processData: false,
             data: JSON.stringify(data),
             contentType: "application/json",
-        }).then((response: { error: string | null; userData: UserData | null }) => {
-            if (response.error) {
-                new NotificationMessage()
-                    .setMessage(response.error)
-                    .setType(Status.Error)
-                    .append();
-            } else if (response.userData) {
-                const { username, token } = response.userData
-                localStorage.setItem("username", username);
-                localStorage.setItem("token", token);
-                window.location.href = window.location.origin;
+        }).then(
+            (response: { error: string | null; userData: UserData | null }) => {
+                if (response.error) {
+                    new NotificationMessage()
+                        .setMessage(response.error)
+                        .setType(Status.Error)
+                        .append();
+                } else if (response.userData) {
+                    const { username, token } = response.userData;
+                    localStorage.setItem("username", username);
+                    localStorage.setItem("token", token);
+                    window.location.href = window.location.origin;
+                }
             }
-        });
+        );
     }
 }

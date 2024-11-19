@@ -1,4 +1,4 @@
-import { NotificationMessage } from "../../../lib/classes/notification";
+import { NotificationMessage } from "../../../lib/notification";
 import { Status } from "../../../types";
 import { checkAccountData } from "../../../utils";
 
@@ -32,7 +32,7 @@ export function registerHandler(event: JQuery.SubmitEvent) {
                     .append();
             } else if (response.email) {
                 localStorage.setItem("email", response.email);
-                window.location.href = window.location.origin + "/verification";
+                window.location.href = window.location.origin + "/verify";
             }
         });
     }

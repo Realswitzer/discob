@@ -1,5 +1,5 @@
 import { StatusMessage, UserData } from "@backend/types";
-import { NotificationMessage } from "../../../lib/classes/notification";
+import { NotificationMessage } from "../../../lib/notification";
 import { Status } from "../../../types";
 
 export function verificationHandler(event: JQuery.SubmitEvent) {
