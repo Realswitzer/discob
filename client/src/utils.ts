@@ -35,7 +35,14 @@ export function sendMessage() {
 }
 
 export function scrollToBottom() {
-    $messages.animate({ scrollTop: $messages[0].scrollHeight }, 0);
+    if (
+        $messages.scrollTop() +
+            $messages.innerHeight() -
+            $messages[0].scrollHeight >
+        -300
+    ) {
+        $messages.animate({ scrollTop: $messages[0].scrollHeight }, 0);
+    }
 }
 
 export function closeReply() {
