@@ -180,5 +180,8 @@ export function applyMarkdown(text: string) {
         .replace(/\*{2}([^\*]+)\*{2}/g, "<b>$1</b>")
         .replace(/\*{1}([^\*]+)\*{1}/g, "<i>$1</i>")
         .replace(/~{2}([^~]+)~{2}/g, "<strike>$1</strike>")
-        .replace(/(https?:\/\/[^\s]+)/g, "<a href='$1' target='_blank'>$1</a>");
+        .replace(/(https?:\/\/[^\s]+)/g, "<a href='$1' target='_blank'>$1</a>")
+        .replace(/#{3}\s(.+)/g, "<h3>$1")
+        .replace(/#{2}\s(.+)/g, "<h2>$1")
+        .replace(/#{1}\s(.+)/g, "<h1>$1");
 }
