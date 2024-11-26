@@ -6,10 +6,10 @@ export async function checkAccountData(
     username: string,
     email: string
 ): Promise<[boolean, string]> {
-    const usernameExists = await checkUsername(username);
-    const emailExists = await checkEmail(email);
-    const isUsernameValid = UsernameRegex.test(username);
-    const isEmailValid = !EmailRegex.test(email);
+    const usernameExists: boolean = await checkUsername(username);
+    const emailExists: boolean = await checkEmail(email);
+    const isUsernameValid: boolean = UsernameRegex.test(username);
+    const isEmailValid: boolean = !EmailRegex.test(email);
 
     if (usernameExists) {
         return [false, StatusMessage.UsernameTaken];
