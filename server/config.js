@@ -1,5 +1,7 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 export const config = {
-    PORT: parseInt(process.env.PORT) || 3000,
+    enableMail: process.env.ENABLE_MAIL === 'true', 
+    enableVerification: process.env.ENABLE_VERIFICATION === 'true',
+    PORT: parseInt(process.env.PORT) || 3000
 };

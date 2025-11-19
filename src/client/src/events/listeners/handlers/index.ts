@@ -4,5 +4,6 @@ export { messageKeydownHandler } from "./messageKeydown";
 export { loadHandler } from "./loadMessages";
 export { windowResizeHandler } from "./windowResize";
 export { registerHandler } from "./register";
-export { loginHandler } from "./login";
-export { scrollHandler } from "./scroll";
+export { verificationHandler } from "./verification";
+export { loginHandler } from "./login"
+export { scrollHandler } from "./scroll"
