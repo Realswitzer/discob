@@ -5,9 +5,9 @@
     "main": "index.js",
     "scripts": {
         "build": "node build.mjs",
-        "postbuild": "cp -r ./public/html/. ./build && cp ./public/style.css ./build/style.css",
+        "postbuild": "cp -r ../src/client/public/html/. ./build && cp ../src/client/public/style.css ./build/style.css",
         "build:win": "node build.mjs",
-        "postbuild:win": "xcopy .\\public\\html .\\build /s /Y & copy .\\public\\style.css .\\build\\style.css",
+        "postbuild:win": "xcopy ..\\src\\client\\public\\html .\\build /s /Y & copy ..\\src\\client\\public\\style.css .\\build\\style.css",
         "tailwind": "npx tailwindcss -i public/input.css -o public/style.css --watch"
     },
     "author": "",

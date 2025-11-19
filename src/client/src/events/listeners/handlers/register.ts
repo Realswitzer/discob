@@ -1,6 +1,7 @@
 import { NotificationMessage } from "../../../lib/notification";
 import { Status } from "../../../types";
 import { checkAccountData } from "../../../utils";
+import { UserData } from "@backend/types";
 
 export function registerHandler(event: JQuery.SubmitEvent) {
     event.preventDefault();
@@ -24,16 +25,20 @@ export function registerHandler(event: JQuery.SubmitEvent) {
             processData: false,
             data: JSON.stringify(data),
             contentType: "application/json",
-        }).then((response: { error: string | null; email: string | null }) => {
-            if (response.error) {
-                new NotificationMessage()
-                    .setMessage(response.error)
-                    .setType(Status.Error)
-                    .append();
-            } else if (response.email) {
-                localStorage.setItem("email", response.email);
-                window.location.href = window.location.origin + "/verify";
+        }).then(
+            (response: { error?: string; userData?: UserData | null }) => {
+                if (response.error) {
+                    new NotificationMessage()
+                        .setMessage(response.error)
+                        .setType(Status.Error)
+                        .append();
+                } else if (response.userData) {
+                    const { username, token } = response.userData;
+                    localStorage.setItem("username", username);
+                    localStorage.setItem("token", token);
+                    window.location.href = window.location.origin;
+                }
             }
-        });
+        );
     }
 }

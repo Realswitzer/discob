@@ -1,27 +1,17 @@
-import { EmailRegex, StatusMessage, UsernameRegex } from "../../types";
-import { checkEmail } from "../mail/checkEmail";
+import { StatusMessage, UsernameRegex } from "../../types";
 import { checkUsername } from "./checkUsername";
 
 export async function checkAccountData(
-    username: string,
-    email: string
+    username: string
 ): Promise<[boolean, string]> {
     const usernameExists: boolean = await checkUsername(username);
-    const emailExists: boolean = await checkEmail(email);
-    const isUsernameValid: boolean = UsernameRegex.test(username);
-    const isEmailValid: boolean = !EmailRegex.test(email);
+    const isUsernameInvalid: boolean = UsernameRegex.test(username);
 
     if (usernameExists) {
         return [false, StatusMessage.UsernameTaken];
     }
-    if (emailExists) {
-        return [false, StatusMessage.EmailTaken];
-    }
-    if (isUsernameValid) {
+    if (isUsernameInvalid) {
         return [false, StatusMessage.InvalidUsername];
-    }
-    if (isEmailValid) {
-        return [false, StatusMessage.InvalidEmail];
     }
     return [true, ""];
 }
