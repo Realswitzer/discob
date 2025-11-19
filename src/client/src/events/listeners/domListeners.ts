@@ -7,7 +7,6 @@ import {
     loadHandler,
     windowResizeHandler,
     registerHandler,
-    verificationHandler,
     loginHandler,
     scrollHandler,
 } from "./handlers";
@@ -30,9 +29,6 @@ switch (window.location.pathname) {
     case "/account":
         $("#register-form").on("submit", registerHandler);
         $("#login-form").on("submit", loginHandler);
-        break;
-    case "/verify":
-        $("#verification-form").on("submit", verificationHandler);
         break;
     default:
         break;

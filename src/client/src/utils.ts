@@ -2,7 +2,6 @@ import {
     DatabaseMessage,
     StatusMessage,
     UsernameRegex,
-    EmailRegex,
 } from "@backend/types";
 import { $messages } from "./globals";
 import { Message } from "./lib/message";
@@ -150,15 +149,12 @@ export async function prependMessages(
 }
 
 export function checkAccountData(data: RegisterData): [boolean, string] {
-    const { username, password, confirmPassword, email } = data;
-    if (!username || !password || !confirmPassword || !email) {
+    const { username, password, confirmPassword } = data;
+    if (!username || !password || !confirmPassword) {
         return [false, StatusMessage.EnterInformation];
     }
     if (UsernameRegex.test(username)) {
         return [false, StatusMessage.InvalidUsername];
-    }
-    if (!EmailRegex.test(email)) {
-        return [false, StatusMessage.InvalidEmail];
     }
     if (confirmPassword != password) {
         return [false, StatusMessage.PasswordMismatch];
