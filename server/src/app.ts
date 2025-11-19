@@ -1,6 +1,7 @@
 import express from "express";
 import loginRouter from "./routes/login";
 import registerRouter from "./routes/register";
+import verifyRouter from "./routes/verify";
 import accountRouter from "./routes/account";
 import { StatusMessage } from "./types";
 import rateLimit from "express-rate-limit";
@@ -27,12 +28,9 @@ app.use(express.json());
 app.use(express.static(__dirname + "/../../client/build/"));
 
 app.use("/login", limiter, loginRouter);
+app.use("/verify", limiter, verifyRouter);
 app.use("/register", limiter, registerRouter);
 app.use("/account", accountRouter);
 app.use("/messages", messagesRouter);
-
-app.get("/", (req, res) => {
-    res.redirect("/account");
-});
 
 export default app;
